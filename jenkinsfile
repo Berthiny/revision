@@ -1,0 +1,48 @@
+pipeline {
+
+    agent any
+
+    parameters{
+        string(name: 'FIRST_NAME', defaultValue:'', description:'Enter your first name')
+        string(name: 'LAST_NAME', defaultValue:'', description:'Enter your last name')
+    }
+
+    stages{
+        stage('Gather Informations'){
+            steps {
+                script {
+                    echo "Hello ${params.FIRST_NAME} ${params.LAST_NAME}!"
+                }
+            }
+        }
+
+        stage('Print Those Informations'){
+            steps {
+                script {
+                    echo "Hello ${params.FIRST_NAME} ${params.LAST_NAME}!"
+                }
+            }
+        }
+
+        stage('Creating a User'){
+            steps {
+                script {
+                    sh """
+                        useradd -m ${params.FIRST_NAME}
+                        usermod -c "${params.FIRST_NAME} ${params.LAST_NAME}" ${params.FIRST_NAME}
+                    """
+                }
+            }
+        }
+
+        stage('Check if the user was created'){
+            steps {
+                script {
+                    sh """
+                        cat /etc/passwd
+                    """
+                }
+            }
+        }
+    }
+}
